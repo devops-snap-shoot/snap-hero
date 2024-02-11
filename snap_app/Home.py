@@ -1,5 +1,6 @@
 
 import os
+from openai import OpenAI
 import streamlit as st
 import snapsettings
 from streamlit_extras.switch_page_button import switch_page
