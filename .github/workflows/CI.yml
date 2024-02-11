@@ -11,14 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v1
       - name: Login to Heroku Container registry
-        env:
-          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
         run: heroku container:login
+        env:
+          HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
       - name: Build and push
+        run: heroku container:push -a snap-heroku-web-app
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:push -a textrank-summarizer web
       - name: Release
+        run: heroku container:release -a snap-heroku-web-app
         env:
           HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-        run: heroku container:release -a textrank-summarizer web
