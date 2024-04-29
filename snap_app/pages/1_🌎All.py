@@ -2,10 +2,10 @@ from langchain_community.utilities import GoogleSerperAPIWrapper
 from langchain_community.tools.tavily_search import TavilySearchResults
 from langchain_openai import ChatOpenAI
 from langchain.agents import AgentType, initialize_agent, load_tools
-import snapsettings
 import streamlit as st
+from streamlit_option_menu import option_menu
+from sidebar import add_logo
 from streamlit_extras.switch_page_button import switch_page
-from streamlit_extras.stylable_container import stylable_container
 
 st.set_page_config(page_title="Snap", page_icon ="🤖", initial_sidebar_state="collapsed")
 
@@ -23,40 +23,21 @@ st.markdown(hide_default_format, unsafe_allow_html=True)
 
 output_print = False #nothing print yet
 # Initialize session state variables if they don't exist
+# if dont exist do nothing
 if 'search_input' not in st.session_state:
-    st.session_state.search_input = snapsettings.text_query  # Initialize with text_query if it exists
+    st.session_state.search_input = st.session_state.query  
+if 'message' not in st.session_state:
+    message = st.session_state.message
+    
+#Menu
+add_logo()
+st.session_state.menu_option = option_menu(None, ["Home", "All", "Agent", 'Web', 'News', 'Create'], 
+        icons=['house', 'globe2', "robot", 'search', 'newspaper', 'magic'], 
+        menu_icon="cast", default_index=1, orientation="horizontal")
 
-message =""
-#simulate nav bar with buttons on top
-with stylable_container(
-    key="🌎All",
-    css_styles="""
-        button {
-            background-color: transparent;
-            color: gray;
-            border-radius: 25px;
-            border-color: transparent;
-        }
-        """,
-):
-
-# Create columns and All button
-    cc = st.columns(6)
-    with cc[0]:
-        if st.button("🌎All"):
-            switch_page("All")  # This is where the page gets switched
-    with cc[1]:
-        if st.button("🤖Agent"):
-            mensaje ="🤖 Agent will be soon!!!" # This is where the page gets switched
-    with cc[2]:
-        if st.button("🔍Web"):
-            switch_page("Web")  # This is where the page gets switched
-    with cc[3]:
-        if st.button("🗞News"):
-             mensaje ="🗞️ News will be soon!!!"# This is where the page gets switched
-    with cc[5]:
-        if st.button("✨Create"):
-             mensaje ="✨Create will be soon!!!"
+# Jump to selected page menu_option (not home since we are already here)
+if st.session_state.menu_option in ("Home","Agent","Web"):
+        switch_page(st.session_state.menu_option)
 
 # Create title with search bar
 from header import head
@@ -113,7 +94,7 @@ with col1:
     new_input = st.text_input("Search", value=st.session_state.search_input if st.session_state.search_input else "", placeholder="Search anything...", label_visibility="collapsed")
     if new_input:
         st.session_state.search_input = new_input  # Update session state with new input
-        snapsettings.text_query = new_input  # Keep text_query in sync with the user input
+        st.session_state.query = new_input  # Keep text_query in sync with the user input
 
 with col2:
     button_press = st.button("🔍")
@@ -127,8 +108,12 @@ if button_press:
         output_print = True
 
 # The echo logic for initial load with session state
-if snapsettings.text_query and not output_print:
+if st.session_state.query and not output_print:
     if new_input:
         perform_search(new_input)
-if message != "":
-    st.warning(message)
+if st.session_state.message != "":
+    st.warning(st.session_state.message)
+    
+if st.session_state.menu_option in ("News", "Create"):
+    # Display a warning message since pages are not ready
+    st.warning(f"{st.session_state.menu_option} will be soon!!")

@@ -20,6 +20,7 @@ def img_to_base64(img_path):
 image_base64 = img_to_base64(img_path)
 
 # Create header with image and text 
+# st.logo(img_path)  # will be soon
 
 def head(header_text, caption_text):
     st.markdown(
@@ -30,7 +31,4 @@ def head(header_text, caption_text):
     )
     if caption_text:
         st.caption(caption_text)
-    
-        
-
-
+ 
