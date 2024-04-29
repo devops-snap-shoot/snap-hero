@@ -1,3 +1,47 @@
+Snap2chat-Heroku: Snap + Chat Hosted on Heroku
+
+Python Streamlit Heroku pre-commit Code style: black
+
+https://www.snap-shoot.com
+
+A social search web application that uses the Openai to search internet. also include a creative section so people can create and make content findable. The application is built with Streamlit and deployed on Heroku using a GitHub action and Docker.
+
+
+Requirements:
+
+To run this app you need to have:
+
+an OpenAI API key
+an Exa API key (there is a free tier available)
+
+Instalation
+
+Set up a virtual environment and install the requirements:
+# $ python3 -m venv .venv
+
+To activate this environment, use:
+# $ source .venv/bin/activate
+
+# $ pip install -r requirements.txt
+
+To run the app, use: 
+# $ streamlit run streamlit_app.py
+
+To deactivate this environment, use:
+# $ source deactivate
+
+Setup the streamlit secrets int the .streamlit/secrets.toml file:
+
+EXA_API_KEY=""
+OPENAI_API_KEY=""
+Usage
+
+streamlit run main.py
+This will open a new tab in your default browser with the app running.
+
+Hosted version
+
+We deployed this app using streamlit community cloud, you can access it here.
 # Text summarization web application
 
 [![Python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=FFDB4D)](https://www.python.org)
@@ -8,7 +52,7 @@
 
 [**https://textrank-summarizer.herokuapp.com/**](https://textrank-summarizer.herokuapp.com/)
 
-A simple web application that uses the [TextRank](https://github.com/summanlp/textrank) algorithm to summarize text.
+A web application that Discover and Create content using AI algorithms.
 The application is built with [Streamlit](https://www.streamlit.io) and deployed on Heroku using a GitHub action and Docker.
 
 ---

@@ -1,53 +1,73 @@
-
 import os
-from openai import OpenAI
 import streamlit as st
-import snapsettings
 from streamlit_extras.switch_page_button import switch_page
-from streamlit_extras.stylable_container import stylable_container
+from streamlit_option_menu import option_menu
 from openai import OpenAI
+from header import img_to_base64
+from sidebar import add_logo
+import streamlit.components.v1 as components
+from footer import adsense_code, load_game
 
-st.set_page_config(page_title="Snap", page_icon = "🤖", initial_sidebar_state="collapsed")
 
-openai_api_key = st.secrets["OPENAI_API_KEY"]
-serper_api_key = st.secrets["SERPER_API_KEY"]
+# Function to set up the Streamlit page configuration
+def setup_page_config():
+    st.set_page_config(page_title="Snap", page_icon="🤖", initial_sidebar_state="collapsed")
 
-# Create the OpenAI API client
-client = OpenAI(
-    organization='org-S6hG2xydQF8XwcexPJtyE0q3',
-)
+# Function to initialize the session state
+def initialize_state():
+    if 'query' not in st.session_state:
+        st.session_state.query = ""
+    if 'message' not in st.session_state:
+        st.session_state.message = ""
 
-#define text_search global
-snapsettings.last_query=""
-message =""
+# Function to create the OpenAI API client
+def create_openai_client():
+    return OpenAI(organization=st.secrets["ORGANIZATION_ID"])
 
-# Adding hide header foother
-hide_default_format = """
-       <style>
-       #MainMenu {visibility: hidden; }
-       footer {visibility: hidden;}
-       </style>
-       """
-st.markdown(hide_default_format, unsafe_allow_html=True)
+# Function to get the base64 string of the image
+def get_image_base64():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    assets_dir = os.path.join(script_dir, "assets")
+    img_path = os.path.join(assets_dir, "snap-logo.png")
+    return img_to_base64(img_path)
 
-# Create title 
-import base64
-# Get the directory of the current script
-script_dir = os.path.dirname(os.path.abspath(__file__))
-assets_dir = os.path.join(script_dir, "assets")
-img_path = os.path.join(assets_dir, "snap-logo.png")
+# Function to create the header with image and menu
+def create_header_and_menu(image_base64):
+    add_logo()
+    st.session_state.menu_option = option_menu(None, ["Home", "All", "Agent", 'Web', 'News', 'Create'], 
+            icons=['house', 'globe2', "robot", 'search', 'newspaper', 'magic'], 
+            menu_icon="cast", default_index=0, orientation="horizontal")
 
-# Function to convert image to base64
-def img_to_base64(img_path):
-    with open(img_path, "rb") as img_file:
-        return base64.b64encode(img_file.read()).decode()
+    # Menu option selection
+    if st.session_state.menu_option in ("All", "Agent", "Web", "Create"):
+        switch_page(st.session_state.menu_option)
 
-# Now use img_path 
-image_base64 = img_to_base64(img_path)
+    # Display the header
+    st.markdown(
+        f'<h1 style="display: inline;">'
+        f'<img src="data:image/png;base64,{image_base64}" style="vertical-align:middle; margin-right: 10px;" width="40" height="40"/>'
+        f'{"Snap-Shoot"}</h1>',
+        unsafe_allow_html=True
+    )
+    st.header(' ', divider='rainbow')
+    st.caption('Explore, Create, Share...')
 
-def get_intent(user_query):
+# Function to hide the default Streamlit format
+def hide_streamlit_format():
+    hide_format = """
+           <style>
+           #MainMenu {visibility: hidden; }
+           footer {visibility: hidden;}
+           </style>
+           """
+    st.markdown(hide_format, unsafe_allow_html=True)
+
+# Function to classify the intent of the user query
+def get_intent(user_query, client):
     prompt = (
-        "You will be provided with a question, and your task  is to classify its intent as search or agent. Only respond with either 'search' if the user is looking for internet information or 'agent' if the user wants to ask or talk to an agent like ChatGPT, nothing else."
+        "You will be provided with a question, and your task is to classify its intent as search or agent. "
+        "Only respond with either 'search' if the user is looking for internet information or 'agent' if the user wants to "
+        "talk to an agent like ChatGPT, nothing else."
     )
     response = client.chat.completions.create(
         model="gpt-4",
@@ -58,66 +78,60 @@ def get_intent(user_query):
     )
     # Accessing the assistant's response from the ChatCompletion object
     assistant_response = response.choices[0].message.content
-    return assistant_response
+    return assistant_response.strip()
 
-#simulate nav bar with buttons on top
-with stylable_container(
-    key="🌎All",
-    css_styles="""
-        button {
-            background-color: transparent;
-            color: gray;
-            border-radius: 25px;
-            border-color: transparent;
-        }
-        """,
-):
-    cc = st.columns(6)
-    with cc[0]:
-        if st.button("🌎All"):
-            switch_page("All")  # This is where the page gets switched
-    with cc[1]:
-        if st.button("🤖Agent"):
-            message ="🤖 Agent will be soon!!!" # This is where the page gets switched
-    with cc[2]:
-        if st.button("🔍Web"):
-            switch_page("Web")  # This is where the page gets switched
-    with cc[3]:
-        if st.button("🗞News"):
-             message ="🗞️ News will be soon!!!"# This is where the page gets switched
-    with cc[5]:
-        if st.button("✨Create"):
-             message ="✨Create will be soon!!!"
-       
-#titulos pagina inicial            
-st.markdown(
-    f'<h1 style="display: inline;">'
-    f'<img src="data:image/png;base64,{image_base64}" style="vertical-align:middle; margin-right: 10px;" width="40" height="40"/>'
-    f'{"Snap-Shoot"}</h1>',
-    unsafe_allow_html=True
-    )
-st.header(' ', divider='rainbow')
-st.caption('Explore, Create, Share...')
-search_query =""
-search_query = st.text_input("Search", placeholder="Search or Ask...", key="search_input", label_visibility="collapsed")
-snapsettings.text_query = search_query.strip()
-
-col1, col2 = st.columns(2)
-emptycol1, col1, col2, emptycol2 = st.columns([2, 2, 2, 2])
-if col1.button("🤖 Search"):
-    if search_query.strip():
-        if (get_intent(search_query.strip())=="agent"):
-            st.warning(f"🤖 Agent will be soon!!!")
-             #switch_page("Agent")
-        else: #if user don't ask for agent then go to search page
-            switch_page("All")
-        
-    else:
+# Function to create the search and create buttons and handle their actions
+def create_search_and_create_buttons(client):
+    search_query = st.text_input("Search", placeholder="Search or Ask...", key="search_input", label_visibility="collapsed")
+    st.session_state.query = search_query.strip()
+    left_space, col1, col2, right_space = st.columns([1, 1, 1, 1])
+    if col1.button("🤖 Search"):
+        if search_query.strip():
+            intent = get_intent(search_query.strip(), client)
+            if intent == "agent":
+                switch_page("Agent")
+            else: # if user didn't ask for an agent then go to search page
+                switch_page("All")
+        else:
             st.error("Please provide the search query.")     
-if col2.button("✨ Create"):
-        #switch_page("Create")
-        st.warning(f"✨ Create will be soon!!!")
-if message != "":
-    st.warning(message)
+    if col2.button("✨ Create"):
+            switch_page("Create")
+
+    # Handle display of warning messages
+    if st.session_state.message:
+        st.warning(st.session_state.message)
+    if st.session_state.menu_option == "News":
+        # Display a warning message since the News page is not ready
+        st.warning(f"{st.session_state.menu_option} will be soon!!")
+
+def game_of_the_day():
+    # Allocate three columns with a ratio that pushes the 'Game of the Day' button to the right
     
-    
+    if st.button('🕹 Game of the Day'):
+        load_game()
+        # Once the game is loaded, the following buttons will be displayed
+        col1, col2 = st.columns([1, 1])
+        with col1:
+            if st.button("Play Again"):
+                load_game()
+        with col2:
+            if st.button("Close"):
+                st.experimental_rerun()  # Rerun to reload the home screen
+
+# The main function wrapping all actions
+def main():
+    setup_page_config()
+    initialize_state()
+    client = create_openai_client()
+    image_base64 = get_image_base64()
+    create_header_and_menu(image_base64)
+    hide_streamlit_format()
+    create_search_and_create_buttons(client)
+    game_of_the_day()
+    #Call the function to render AdSense code
+    #adsense_code()
+
+
+if __name__ == "__main__":
+    main()
+
