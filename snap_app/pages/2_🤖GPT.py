@@ -1,31 +1,21 @@
-import os
 import time
 from urllib.parse import urlparse
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 from streamlit_option_menu import option_menu
-from agent import query2answer
+from GPT_body import query2answer
 from streamlit_feedback import streamlit_feedback
 from header import head, img_to_base64
 from sidebar import add_logo
-
 import uuid  # Import uuid for generating a unique session_id
 
 # Initialize session_id if not present
 if 'session_id' not in st.session_state:
     st.session_state['session_id'] = str(uuid.uuid4())
 
-# Continue with your existing code...
 
 #Menu
 add_logo()
-st.session_state.menu_option = option_menu(None, ["Home", "All", "Agent", 'Web', 'News', 'Create'], 
-        icons=['house', 'globe2', "robot", 'search', 'newspaper', 'magic'], 
-        menu_icon="cast", default_index=2, orientation="horizontal")
-
-# Jump to selected page menu_option (not home since we are already here)
-if st.session_state.menu_option in ("Home","All","Web"):
-        switch_page(st.session_state.menu_option)
 
 # Initialize URL
 # Check the query parameters for a URL
@@ -150,6 +140,3 @@ if len(st.session_state.messages) > 1:
         key=f"{st.session_state.session_id}_{len(st.session_state.messages)}",
     )
 
-if st.session_state.menu_option in ("News", "Create"):
-        # Display a warning message since pages are not ready
-        st.warning(f"{st.session_state.menu_option} will be soon!!")

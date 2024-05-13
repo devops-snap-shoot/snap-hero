@@ -1,6 +1,6 @@
-Snap2chat-Heroku: Snap + Chat Hosted on Heroku
+Snap : Hosted on Heroku
 
-Python Streamlit Heroku pre-commit Code style: black
+Python Streamlit Heroku pre-commit Code style: browser
 
 https://www.snap-shoot.com
 
@@ -23,12 +23,15 @@ To activate this environment, use:
 # $ source .venv/bin/activate
 
 # $ pip install -r requirements.txt
-
+(Nota: en caso de  ERROR: Failed building wheel for chroma-hnswliben caso de export HNSWLIB_NO_NATIVE=1 despues  pip install HNSWLIB )
 To run the app, use: 
 # $ streamlit run streamlit_app.py
+# $ streamlit run snap_app/home.py
+# $ sh run.sh
 
 To deactivate this environment, use:
 # $ source deactivate
+To Remove
 
 Setup the streamlit secrets int the .streamlit/secrets.toml file:
 
