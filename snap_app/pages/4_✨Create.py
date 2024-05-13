@@ -11,7 +11,7 @@ from create_body import kickoffTheCrew, query_huggingface
 style_options = {
     'Writer': ['Essays', 'Poem', 'Joke', 'Blog'],
     'Social': ['Funny', 'Formal', 'Friendly'],
-    'Image': ["Abstract", "Cute", "Fantasy", "Futuristic", "Realistic", "Science Fiction", "Surreal", "Techno"]
+    'Image': ["Abstract", "Cute", "Fantasy", "Futuristic", "Realistic", "Science Fiction", "Surreal", "Techno","Pixar", "Anime", "Monet"]
 }
 
 # Setting the page configuration and title
@@ -19,13 +19,6 @@ st.set_page_config(page_title="Creative AI Content Generator", layout="wide")
 
 #Menu
 add_logo()
-st.session_state.menu_option = option_menu(None, ["Home", "All", "Agent", 'Web', 'News', 'Create'], 
-        icons=['house', 'globe2', "robot", 'search', 'newspaper', 'magic'], 
-        menu_icon="cast", default_index=1, orientation="horizontal")
-
-# Jump to selected page menu_option (not home since we are already here)
-if st.session_state.menu_option in ("Home","Agent","Web"):
-        switch_page(st.session_state.menu_option)
 
 # Create title with search bar
 from header import head
@@ -52,9 +45,9 @@ with tab1:
         prompt_text = st.text_area("Enter the topic you want to write about", height=150)
         # Corrected: Ensure that the style selected is directly passed as a string
         selected_style = st.selectbox("Choose your style:", style_options['Writer'], key='WriterStyle')
-        generate_button = st.button("Generate 🪄", key='GenerateWrite')
+        generate_button = st.button("✨ Generate", key='GenerateWrite')
     with result_column:
-        st.subheader("Your AI Written Creation")
+        st.subheader("Your AI Written Creation 🪄")
         # Use st.empty() to create a placeholder for future content
         result_placeholder = st.empty()
         if generate_button:

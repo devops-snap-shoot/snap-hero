@@ -7,7 +7,7 @@ from streamlit_option_menu import option_menu
 from sidebar import add_logo
 from streamlit_extras.switch_page_button import switch_page
 
-st.set_page_config(page_title="Snap", page_icon ="🤖", initial_sidebar_state="collapsed")
+st.set_page_config(page_title="Snap", page_icon ="🧭")
 
 openai_api_key = st.secrets["OPENAI_API_KEY"]
 serper_api_key = st.secrets["SERPER_API_KEY"]
@@ -31,20 +31,11 @@ if 'message' not in st.session_state:
     
 #Menu
 add_logo()
-st.session_state.menu_option = option_menu(None, ["Home", "All", "Agent", 'Web', 'News', 'Create'], 
-        icons=['house', 'globe2', "robot", 'search', 'newspaper', 'magic'], 
-        menu_icon="cast", default_index=1, orientation="horizontal")
-
-# Jump to selected page menu_option (not home since we are already here)
-if st.session_state.menu_option in ("Home","Agent","Web"):
-        switch_page(st.session_state.menu_option)
 
 # Create title with search bar
 from header import head
-head("Snap🌎All", " ")
+head("Discover", " ")
 
-# Import the OpenAIError class from the openai module
-from openai import OpenAIError
 
 # Function to perform the search operation
 
@@ -114,6 +105,3 @@ if st.session_state.query and not output_print:
 if st.session_state.message != "":
     st.warning(st.session_state.message)
     
-if st.session_state.menu_option in ("News", "Create"):
-    # Display a warning message since pages are not ready
-    st.warning(f"{st.session_state.menu_option} will be soon!!")
