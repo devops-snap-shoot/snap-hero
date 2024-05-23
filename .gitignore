@@ -119,7 +119,7 @@ ipython_config.py
 
 # pyenv
 .python-version
-myenv/
+# myenv/
 
 
 # pipenv

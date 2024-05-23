@@ -38,12 +38,12 @@ head("Discover", " ")
 
 
 # Function to perform the search operation
-
 def perform_search(query):
     try:
         with st.spinner('Looking for information...'): 
+            
             # Initialize the ChatOpenAI module, load the Google Serper API tool, TavilySearchResults tool, and run the search query using a React agent
-            llm = ChatOpenAI(temperature=0.3, model_name="gpt-4", streaming=True, verbose=True)
+            llm = ChatOpenAI(temperature=0.3, model_name="gpt-4o", streaming=True, verbose=True)
             
             # Initialize the TavilySearchResults tool separately
             tavily_tool = TavilySearchResults(max_results=1)
@@ -56,7 +56,7 @@ def perform_search(query):
             
             # Ensure to use the correct endpoint for a chat model
             agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, handle_parsing_errors=True, verbose=True)
-            
+           
             response = agent.run(query)
             st.success(response)
             
@@ -71,12 +71,15 @@ def perform_search(query):
                 for i, (col, item) in enumerate(zip(cols*2, result_dict['organic'])):
                     with col:
                         truncated_link = item['link'][:50] + '...' if len(item['link']) > 30 else item['link']
-                        st.success(f"Title: {item['title']}\n\n{item['snippet']}\n\nLink: {truncated_link}")
+                        snippet = item.get('snippet', 'No snippet available')  # Use .get to safely access the snippet
+                        st.success(f"Title: {item['title']}\n\n{snippet}\n\nLink: {truncated_link}")
 
     except Exception as e:
         st.error(f"An error occurred: {e}")
         st.write("Full traceback:")
         st.exception(e)
+        
+        
         
 # Handle the text input and the button
 col1, col2 = st.columns([5, 1])

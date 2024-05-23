@@ -21,10 +21,10 @@ from PIL import Image
 from footer import load_game
 from serpapi import GoogleSearch
 
-
-# Function to set up the Streamlit page configuration
-def setup_page_config():
-    st.set_page_config(page_title="Snap", page_icon="🤖")
+import pathlib
+from bs4 import BeautifulSoup
+import logging
+import shutil
 
 # Function to initialize the session state
 def initialize_state():
@@ -32,6 +32,11 @@ def initialize_state():
         st.session_state.query = ""
     if 'message' not in st.session_state:
         st.session_state.message = ""
+
+# Function to set up the Streamlit page configuration
+def setup_page_config():
+    st.set_page_config(page_title="Snap", page_icon="🤖")
+
 
 # Function to create the OpenAI API client
 def create_openai_client():
@@ -62,7 +67,7 @@ def create_header(image_base64):
     st.markdown(
         f'<h1 style="display: inline;">'
         f'<img src="data:image/png;base64,{image_base64}" style="vertical-align:middle; margin-right: 10px;" width="40" height="40"/>'
-        f'{"Hello again"}</h1>',
+        f'{"Hello"}</h1>',
         unsafe_allow_html=True
     )
     st.header(' ', divider='rainbow')
@@ -72,11 +77,11 @@ def create_header(image_base64):
 def get_intent(user_query, client):
     prompt = (
         "You will be provided with a question, and your task is to classify its intent as search or agent. "
-        "Only respond with either 'search' if the user is looking for internet information or 'agent' if the user wants to "
-        "talk to an agent like ChatGPT, nothing else."
+        "Only respond with either 'search' if the user is looking for internet information or use a simple word of name, or say  'agent' if the user wants to "
+        "talk to an agent like ChatGPT or the question start whith someting like they want to chat or talk like: I want to know or What, tell me about, if you are unsure just say search nothing else."
     )
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4o",
         messages=[
             {"role": "system", "content": prompt},
             {"role": "user", "content": user_query}
@@ -95,8 +100,8 @@ def create_search_and_create_buttons(client):
     if col1.button("🧭 Explore"):
         if search_query.strip():
             intent = get_intent(search_query.strip(), client)
-            if intent == "agent":
-                switch_page("GPT")
+            if intent == "search":
+                switch_page("Explore")
             else:  # if user didn't ask for an agent then go to search page
                 switch_page("GPT")
         else:
@@ -179,17 +184,17 @@ def display_news(news_list, title):
                 else:
                     st.write("Image not available")  # Provide feedback if no image is available
             with col2:
-                # Wrap the title in an anchor tag to make it clickable
+                # Wrap the title in an anchor tag to make it clickable and change the color to gray
                 st.markdown(f"""
                     <a href='{news['link']}' target='_blank' style='text-decoration: none;'>
-                        <p style='font-size: 18px; font-weight: bold; overflow: hidden; display: -webkit-box; 
-                        -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: black;'>
+                        <p style='font-size: 18px; font-weight: normal; overflow: hidden; display: -webkit-box; 
+                        -webkit-line-clamp: 2; -webkit-box-orient: vertical; color: gray;'>
                             {news['title']}
                         </p>
                     </a>
                 """, unsafe_allow_html=True)
             st.markdown("---")  # Add a divider after each news item
-
+            
 #Game Section
 def game_of_the_day():
     # Allocate three columns with a ratio that pushes the 'Game of the Day' button to the right
@@ -204,11 +209,44 @@ def game_of_the_day():
         with col2:
             if st.button("Close"):
                 st.experimental_rerun()  # Rerun to reload the home screen
+                
+# AddSense Section
+import pathlib
+import shutil
+import logging
+from bs4 import BeautifulSoup
+import streamlit as st
+
+
+def adsense_code():
+    adsense_url = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"
+    GA_AdSense = """
+      <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8155652268489082"
+     crossorigin="anonymous"></script>
+      <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+      </script>
+    """
+
+    # Insert the script in the head tag of the static template inside your virtual environment
+    index_path = pathlib.Path(st.__file__).parent / "static" / "index.html"
+    logging.info(f'editing {index_path}')
+    soup = BeautifulSoup(index_path.read_text(), features="html.parser")
+    if not soup.find('script', src=adsense_url):
+        bck_index = index_path.with_suffix('.bck')
+        if bck_index.exists():
+            shutil.copy(bck_index, index_path)  
+        else:
+            shutil.copy(index_path, bck_index)  
+        html = str(soup)
+        new_html = html.replace('<head>', '<head>\n' + GA_AdSense)
+        index_path.write_text(new_html)
+
 
 # The main function wrapping all actions
 def main():
-    setup_page_config()
     initialize_state()
+    setup_page_config()
     hide_streamlit_format()
     client = create_openai_client()
     image_base64 = get_image_base64()
@@ -222,12 +260,12 @@ def main():
     with col2:
         local_news = fetch_news(number_of_news=2, type_of_news='local', country_code='cl')
         display_news(local_news, "News")
-    
 
+    # Call the function to render the game of the day 
     game_of_the_day()
     
    # Call the function to render AdSense code
-    # adsense_code()
+    adsense_code()
 
 if __name__ == "__main__":
     main()
