@@ -32,6 +32,7 @@ dataclasses-json==0.6.5
 decorator==5.1.1
 Deprecated==1.2.14
 deprecation==2.1.0
+distlib==0.3.8
 distro==1.9.0
 dnspython==1.16.0
 docstring-parser==0.15
@@ -139,6 +140,7 @@ packaging==23.2
 pandas==2.2.1
 phospho==0.3.4
 pillow==10.2.0
+platformdirs==4.2.2
 pluggy==1.5.0
 posthog==3.5.0
 pretty-errors==1.2.25
@@ -232,6 +234,7 @@ urllib3==2.2.1
 uvicorn==0.29.0
 uvloop==0.19.0
 validators==0.22.0
+virtualenv==20.26.2
 watchdog==4.0.0
 watchfiles==0.21.0
 websocket-client==1.8.0
