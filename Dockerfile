@@ -1,25 +1,22 @@
-# app/Dockerfile
+# app/Dockerfile Steamlit
 
-# Base Image to use
 FROM python:3.11-slim
 
-# Change Working Directory to app directory
-WORKDIR /snap_app
+WORKDIR /app
 
-# Copy Requirements.txt file into app directory
-COPY requirements.txt .
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    curl \
+    software-properties-common \
+    git \
+    && rm -rf /var/lib/apt/lists/*
 
-# Install all requirements in requirements.txt
-RUN python -m pip install -r requirements.txt --no-cache-dir
+RUN git clone https://github.com/streamlit/streamlit-example.git .
 
-# Copy all files in current directory into app directory
-COPY . .
+RUN pip3 install -r requirements.txt
 
-# Copy the specific index.html from the virtual environment to the appropriate place
-COPY .venv/lib/python3.11/site-packages/streamlit/static/index.html /usr/local/lib/python3.11/site-packages/streamlit/static/index.html
+EXPOSE 8501
 
-# Expose port 8080
-EXPOSE 8080
+HEALTHCHECK CMD curl --fail http://localhost:8501/_stcore/health
 
-# Run the application on port 8080
-CMD ["streamlit", "run", "--server.port", "8080", "snap_app/1_🏠_Home.py"]
+ENTRYPOINT ["streamlit", "run", "1_🏠_Home.py", "--server.port=8501", "--server.address=0.0.0.0"]
