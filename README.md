@@ -1,4 +1,5 @@
-Snap : Hosted on Heroku
+# SNAP-SHOOT
+Hosted on Heroku
 
 Python Streamlit Heroku pre-commit Code style: browser
 
@@ -7,45 +8,92 @@ https://www.snap-shoot.com
 A social search web application that uses the Openai to search internet. also include a creative section so people can create and make content findable. The application is built with Streamlit and deployed on Heroku using a GitHub action and Docker.
 
 
-Requirements:
-
+# Requirements:
 To run this app you need to have:
-
-an OpenAI API key
-an Exa API key (there is a free tier available)
-
-Instalation
-
-Set up a virtual environment and install the requirements:
-# $ python3 -m venv .venv
-
-To activate this environment, use:
-# $ source .venv/bin/activate
-
-# $ pip install -r requirements.txt
-(Nota: en caso de  ERROR: Failed building wheel for chroma-hnswliben caso de export HNSWLIB_NO_NATIVE=1 despues  pip install HNSWLIB )
-To run the app, use: 
-# $ streamlit run streamlit_app.py
-# $ streamlit run snap_app/home.py
-# $ sh run.sh
-
-To deactivate this environment, use:
-# $ source deactivate
-To Remove
+an OpenAI API key and others Search Keys
 
 Setup the streamlit secrets int the .streamlit/secrets.toml file:
-
 EXA_API_KEY=""
 OPENAI_API_KEY=""
-Usage
+Note: to deactivate this environment, use:
+$ source deactivate
 
+
+
+# Instalation
+Set up a virtual environment and install the requirements 
+$ python3 -m venv .venv
+$ python3.11 -m venv ./.venv
+
+# To activate this environment, use: 
+$ source .venv/bin/activate
+$ pip install -r requirements.txt
+
+#si se necesita recrear requirements:
+$ pip freeze > requirements.txt
+#en caso de  ERROR: Failed building wheel for chroma-hnswliben caso de export HNSWLIB_NO_NATIVE=1 despues  
+$ pip install HNSWLIB 
+
+# To run the app, use: 
+ #$ streamlit run streamlit_app.py
+ $ streamlit run app/1_🏠_Home.py
+ $ sh run.sh
+
+# 🐳 Run App using Docker
+Build your Docker image and specify your custom tag for the image with this command:
+docker build -t <docker-name>:latest .
+$ docker build -t snap-app .
+$ docker images
+
+Run the Docker container directly
+docker run -d --name snap-heroku-web-app -p 8080:8080 snap-heroku-web-app 
+
+$ docker run -d --name snap-app -p 8080:8080 snap-app 
+$ docker run -p 8080:8080 streamlit
+to see
+> http://localhost:8080
+
+Run the docker container using docker-compose (Recommended)
+docker-compose up
+
+# Step 6: Log into Heroku and create a new app on Heroku:
+
+$ heroku login
+$ heroku container:login
+
+$ docker ps
+
+heroku create <your-app-name>
+$ heroku create snap-app-2-3
+
+# Step 7: Push your Docker image to Heroku Container Registry and deploy your app!
+
+docker tag <your-docker-image_tag>:latest registry.heroku.com/<your-app-name>/web:latest
+$ docker tag streamlit:latest registry.heroku.com/snap-app-2-3/web:latest
+
+docker push registry.heroku.com/<your-app-name>/web:latest
+$ docker push registry.heroku.com/snap-app-2-3/web:latest
+
+heroku container:release web --app <your-app-name>
+$ heroku container:release web --app snap-app-2-3
+
+
+# Connect Heroku to GitHub repo
+heroku git:remote -a <your-app-name>
+$ heroku git:remote -a snap-app-1
+
+$ git push heroku master:main
+
+=====
+
+# Usage
 streamlit run main.py
 This will open a new tab in your default browser with the app running.
 
-Hosted version
-
+# Hosted version
 We deployed this app using streamlit community cloud, you can access it here.
-# Text summarization web application
+##
+# Snap-Shoot web application
 
 [![Python](https://img.shields.io/badge/Python-3.8-3776AB.svg?style=flat&logo=python&logoColor=FFDB4D)](https://www.python.org)
 [![Streamlit](https://img.shields.io/badge/Streamlit-app-FF4B4B.svg?style=flat)](https://www.streamlit.io)
@@ -53,13 +101,9 @@ We deployed this app using streamlit community cloud, you can access it here.
 [![pre-commit](https://img.shields.io/badge/pre--commit-enabled-brightgreen?logo=pre-commit&logoColor=white)](https://github.com/pre-commit/pre-commit)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
-[**https://textrank-summarizer.herokuapp.com/**](https://textrank-summarizer.herokuapp.com/)
+[**https://www.snap-shoot.com/**](https://www.snap-shoot.com/)
 
 A web application that Discover and Create content using AI algorithms.
 The application is built with [Streamlit](https://www.streamlit.io) and deployed on Heroku using a GitHub action and Docker.
 
 ---
-
-[![jhc github](https://img.shields.io/badge/GitHub-jhrcook-181717.svg?style=flat&logo=github)](https://github.com/jhrcook)
-[![jhc twitter](https://img.shields.io/badge/Twitter-@JoshDoesA-00aced.svg?style=flat&logo=twitter)](https://twitter.com/JoshDoesa)
-[![jhc website](https://img.shields.io/badge/Website-Joshua_Cook-5087B2.svg?style=flat&logo=telegram)](https://joshuacook.netlify.com)
