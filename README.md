@@ -36,13 +36,14 @@ $ pip install HNSWLIB
 
 # To run the app, use: 
  #$ streamlit run streamlit_app.py
- $ streamlit run app/1_🏠_Home.py
+ $ streamlit run snap-app/1_🏠_Home.py
  $ sh run.sh
 
 # 🐳 Run App using Docker
 Build your Docker image and specify your custom tag for the image with this command:
 docker build -t <docker-name>:latest .
 $ docker build -t snap-app .
+$ docker build --no-cache -t snap-app .
 $ docker images
 
 Run the Docker container directly
