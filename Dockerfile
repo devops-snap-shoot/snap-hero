@@ -1,26 +1,25 @@
-# app/Dockerfile
-# Base Image to use
-ARG PYTHON_IMAGE=python:3.11-slim
+# Use the official lightweight Python image.
+# https://hub.docker.com/_/python
+FROM python:3.11-slim
 
-FROM ${PYTHON_IMAGE}
+# These two environment variables prevent __pycache__/ files.
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
 
-# Change Working Directory to app directory
-WORKDIR /snap_app
-
-# Copy Requirements.txt file into app directory
+# Install pip requirements
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Install all requirements in requirements.txt
-RUN python -m pip install -r requirements.txt --no-cache-dir
-
-#Copy all files in current directory into app directory
-COPY . .
+# Copy the rest of the application
+COPY . /snap_app
 COPY index.html /usr/local/lib/python:3.11/site-packages/streamlit/static/index.html
 
-#Expose port 8080
-EXPOSE 8080
+WORKDIR /snap_app
+
+# Expose the port the app runs on
+EXPOSE 8501
 
 HEALTHCHECK CMD curl --fail http://localhost:8080/_stcore/health
 
-#Run the application on port 8080
-CMD ["streamlit", "run", "--server.port", "8080", "snap_app/1_🏠_Home.py"]
+# Run the app
+CMD ["streamlit", "run", "snap_app/1_🏠_Home.py", "--server.port=8501"]
