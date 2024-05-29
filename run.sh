@@ -1,1 +1,1 @@
-streamlit run snap_app/1_🏠_Home.py
+streamlit run app/1_🏠_Home.py

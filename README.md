@@ -19,24 +19,24 @@ OPENAI_API_KEY=""
 
 # Instalation
 Set up a virtual environment and install the requirements 
-$ python3 -m venv .venv
+$ python3 -m venv venv
 
 # To activate this environment, use: 
-$ source .venv/bin/activate
+$ source venv/bin/activate
 $ pip install -r requirements.txt
 
 # To deactivate this environment, use:
 $ source deactivate
 
-# si se necesita recrear requirements:
+si se necesita recrear requirements:
 $ pip freeze > requirements.txt
-# en caso de  ERROR: Failed building wheel for chroma-hnswliben caso de export HNSWLIB_NO_NATIVE=1 despues  
+
+en caso de  ERROR: Failed building wheel for chroma-hnswliben caso de export HNSWLIB_NO_NATIVE=1 despues  
 $ pip install HNSWLIB 
 
 # To run the app, use: 
-# $ streamlit run streamlit_app.py
- $ streamlit run snap_app/home.py
- $ sh run.sh
+$ streamlit run snap_app/1_🏠_Home.py
+$ sh run.sh
 
 # 🐳 Run App using Docker
 Build your Docker image and specify your custom tag for the image with this command:
