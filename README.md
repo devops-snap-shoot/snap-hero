@@ -65,18 +65,18 @@ $ heroku container:login
 $ docker ps
 
 heroku create <your-app-name>
-$ heroku create snap-app-2-6
+$ heroku create snap-app-2-7
 
 # Step 7: Push your Docker image to Heroku Container Registry and deploy your app!
 
 docker tag <your-docker-image_tag>:latest registry.heroku.com/<your-app-name>/web:latest
-$ docker tag streamlit:latest registry.heroku.com/snap-app-2-6/web:latest
+$ docker tag streamlit:latest registry.heroku.com/snap-app-2-7/web:latest
 
 docker push registry.heroku.com/<your-app-name>/web:latest
-$ docker push registry.heroku.com/snap-app-2-6/web:latest
+$ docker push registry.heroku.com/snap-app-2-7/web:latest
 
 heroku container:release web --app <your-app-name>
-$ heroku container:release web --app snap-app-2-3
+$ heroku container:release web --app snap-app-2-7
 
 
 # Connect Heroku to GitHub repo
