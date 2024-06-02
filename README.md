@@ -42,17 +42,17 @@ $ pip install HNSWLIB
 # 🐳 Run App using Docker
 Build your Docker image and specify your custom tag for the image with this command:
 docker build -t <docker-name>:latest .
-$ docker build -t snap-app .
-$ docker build --no-cache -t snap-app .
+$ docker build -t streamlit .
+$ docker build --no-cache -t streamlit .
 $ docker images
 
 Run the Docker container directly
-docker run -d --name snap-heroku-web-app -p 8080:8080 snap-heroku-web-app 
+docker run -d --name snap-heroku-web-app -p 8501:8501 snap-heroku-web-app 
 
-$ docker run -d --name snap-app -p 8080:8080 snap-app 
-$ docker run -p 8080:8080 streamlit
+$ docker run -d --name snap-app -p 8501:8501 <your-app-name>
+$ docker run -p 8501:8501 streamlit
 to see
-> http://localhost:8080
+> http://localhost:8501
 
 Run the docker container using docker-compose (Recommended)
 docker-compose up
@@ -65,15 +65,15 @@ $ heroku container:login
 $ docker ps
 
 heroku create <your-app-name>
-$ heroku create snap-app-2-3
+$ heroku create snap-app-2-6
 
 # Step 7: Push your Docker image to Heroku Container Registry and deploy your app!
 
 docker tag <your-docker-image_tag>:latest registry.heroku.com/<your-app-name>/web:latest
-$ docker tag streamlit:latest registry.heroku.com/snap-app-2-3/web:latest
+$ docker tag streamlit:latest registry.heroku.com/snap-app-2-6/web:latest
 
 docker push registry.heroku.com/<your-app-name>/web:latest
-$ docker push registry.heroku.com/snap-app-2-3/web:latest
+$ docker push registry.heroku.com/snap-app-2-6/web:latest
 
 heroku container:release web --app <your-app-name>
 $ heroku container:release web --app snap-app-2-3
