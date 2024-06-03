@@ -11,5 +11,5 @@ for package in nltk_packages:
 port = os.environ.get('PORT', 8501)
 
 # Run the Streamlit app
-command = f"streamlit run home.py --server.port={port}"
+command = f"streamlit run snap_app/1_🏠_Home.py --server.port={port}"
 subprocess.run(command, shell=True)
