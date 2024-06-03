@@ -1,1 +1,1 @@
-web: streamlit run snap-app/1_🏠_Home.py
+web: python start_streamlit.py
