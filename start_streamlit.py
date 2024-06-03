@@ -1,11 +1,8 @@
 import os
 import subprocess
-import nltk
 
-# Ensure NLTK packages are downloaded
-nltk_packages = ['wordnet', 'pros_cons', 'reuters']
-for package in nltk_packages:
-    nltk.download(package)
+# Call the NLTK download script
+subprocess.run("python download_nltk_data.py", shell=True)
 
 # Get the port from the environment
 port = os.environ.get('PORT', 8501)
